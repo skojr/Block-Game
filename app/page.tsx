@@ -1,21 +1,25 @@
-import Board from "./board";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-950 dark:to-gray-800 text-foreground">
-      <main className="flex min-h-screen w-full flex-col items-center justify-center px-8 py-16 gap-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-amber-900 dark:from-gray-100 dark:via-gray-200 dark:to-amber-100 bg-clip-text text-transparent tracking-tight">
-            Block Game
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-950 dark:to-gray-800 text-foreground">
+      <main className="flex flex-col items-center justify-center gap-8 px-8 py-16">
+        <div className="text-center space-y-4">
+          <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-amber-600 via-blue-700 to-amber-800 dark:from-blue-400 dark:via-blue-600 dark:to-amber-400 bg-clip-text text-transparent tracking-tight">
+            Welcome to Block Game!
           </h1>
-          <p className="text-muted-foreground text-lg font-medium">Goal: Move the yellow square into the bottom right corner</p>
-          <p className="text-muted-foreground text-lg font-medium">Rule 1: You can only move a square into open space</p>
-          <p className="text-muted-foreground text-lg font-medium">Rule 2: You can only move a square into directly djacent spaces (either horizontally or vertically)</p>
-          
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+            Slide blocks around and bring the yellow square to its goal. Can you solve the puzzle?
+          </p>
         </div>
-        <div className="flex items-center justify-center p-8 rounded-2xl bg-card/50 dark:bg-card/30 backdrop-blur-sm border border-border shadow-xl">
-          <Board></Board>
-        </div>
+        <Link
+          href="/game"
+          className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-700 hover:from-sky-600 hover:to-blue-800 transition-colors text-white text-xl font-bold shadow-lg active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
+        >
+          Play Game
+          <ArrowRight className="w-5 h-5" />
+        </Link>
       </main>
     </div>
   );
