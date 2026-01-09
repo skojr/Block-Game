@@ -10,7 +10,11 @@ interface Square {
 
 interface Hooks {
     handleTileClick: (index: number) => void,
-    squares: Square[]
+    squares: Square[],
+    undo: () => void,
+    redo: () => void,
+    canUndo: boolean,
+    canRedo: boolean
 }
 export default function useBoardGame({ rows, cols }: { rows: number, cols: number }): Hooks {
 
@@ -23,6 +27,9 @@ export default function useBoardGame({ rows, cols }: { rows: number, cols: numbe
             selected: false,
         }))
     );
+    const [history, setHistory] = useState<Square[][]>([]);
+    const [future, setFuture] = useState<Square[][]>([]);
+
 
     function handleTileClick(index: number): void {
         const copyOfSquares = squares.slice();
@@ -36,8 +43,15 @@ export default function useBoardGame({ rows, cols }: { rows: number, cols: numbe
                     alert("Illegal Move! Can only move square into adjacent, open space");
                     return;
                 }
+
+                // move selected square to empty space
                 copyOfSquares[index] = squares[selectedTileIndex]
-                copyOfSquares[selectedTileIndex] = emptyTile
+                copyOfSquares[selectedTileIndex] = emptyTile 
+                
+                // store current state in history stack before making the move
+                // clear future stack since we're making a new move
+                setHistory([...history, squares.map(s => ({ ...s }))]);
+                setFuture([]);
 
                 // update squares and reset everything to not selected
                 setSquares(copyOfSquares)
@@ -57,8 +71,48 @@ export default function useBoardGame({ rows, cols }: { rows: number, cols: numbe
         return;
     };
 
+    function undo(): void {
+        if (history.length === 0) return; // nothing to undo
+        
+        // get the previous state from history stack
+        const previousState = history[history.length - 1];
+        
+        // push current state to future stack (for redo)
+        setFuture([...future, squares.map(s => ({ ...s }))]);
+        
+        // remove last state from history and restore it
+        setHistory(history.slice(0, -1));
+        setSquares(previousState.map(s => ({ ...s })));
+        
+        // clear selection when undoing
+        setIsASquareselected(false);
+        setSelectedTileIndex(-1);
+    }
+
+    function redo(): void {
+        if (future.length === 0) return; // nothing to redo
+        
+        // get the next state from future stack
+        const nextState = future[future.length - 1];
+        
+        // push current state to history stack (for undo)
+        setHistory([...history, squares.map(s => ({ ...s }))]);
+        
+        // remove last state from future and restore it
+        setFuture(future.slice(0, -1));
+        setSquares(nextState.map(s => ({ ...s })));
+        
+        // clear selection when redoing
+        setIsASquareselected(false);
+        setSelectedTileIndex(-1);
+    }
+
     return {
         handleTileClick,
-        squares
+        squares,
+        undo,
+        redo,
+        canUndo: history.length > 0,
+        canRedo: future.length > 0
     }
 }

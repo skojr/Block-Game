@@ -1,7 +1,12 @@
+"use client";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useState } from "react";
 
 export default function Home() {
+  const [rows, setRows] = useState(3);
+  const [cols, setCols] = useState(3);
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-950 dark:to-gray-800 text-foreground">
       <main className="flex flex-col items-center justify-center gap-8 px-8 py-16">
