@@ -8,7 +8,10 @@ export default function Home() {
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-amber-900 dark:from-gray-100 dark:via-gray-200 dark:to-amber-100 bg-clip-text text-transparent tracking-tight">
             Block Game
           </h1>
-          <p className="text-muted-foreground text-lg font-medium">Get the top left block into the bottom right space.</p>
+          <p className="text-muted-foreground text-lg font-medium">Goal: Move the yellow square into the bottom right corner</p>
+          <p className="text-muted-foreground text-lg font-medium">Rule 1: You can only move a square into open space</p>
+          <p className="text-muted-foreground text-lg font-medium">Rule 2: You can only move a square into directly djacent spaces (either horizontally or vertically)</p>
+          
         </div>
         <div className="flex items-center justify-center p-8 rounded-2xl bg-card/50 dark:bg-card/30 backdrop-blur-sm border border-border shadow-xl">
           <Board></Board>

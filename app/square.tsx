@@ -2,12 +2,17 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button";
 
-export default function Tile({ occupied=true, target=false }: {occupied?: boolean, target?: boolean}) {
+interface SquareProps {
+    onSquareClick: () => void,
+    occupied?: boolean,
+    target?: boolean
+}
+
+export default function Square({ onSquareClick, occupied=true, target=false }: SquareProps) {
     const [block, setBlock] = useState([])
 
-
     return (
-        <button className="w-20 h-20 relative border-2 border-border bg-card hover:bg-accent focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed flex items-center justify-center rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 group overflow-hidden">
+        <button onClick={onSquareClick} className="w-20 h-20 relative border-2 border-border bg-card hover:bg-accent focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed flex items-center justify-center rounded-xl transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 group overflow-hidden">
             {occupied && !target && (
                 <div className="w-14 h-14 rounded-lg bg-gradient-to-br from-amber-600 via-blue-700 to-amber-800 dark:from-blue-500 dark:via-blue-600 dark:to-blue-700 shadow-lg ring-2 ring-blue-900/20 dark:ring-blue-300/20 transition-transform duration-200 group-hover:scale-105"></div>
             )}
