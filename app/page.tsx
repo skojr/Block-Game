@@ -1,17 +1,18 @@
 "use client";
 import Link from "next/link";
-import { ArrowRight, LogIn, UserPlus } from "lucide-react";
-import { useState } from "react";
+import { ArrowRight } from "lucide-react";
+import { useSession } from "next-auth/react";
+import SignIn from "@/components/SignIn";
+import UserMenu from "@/components/UserMenu";
 
 export default function Home() {
-  const [rows, setRows] = useState(3);
-  const [cols, setCols] = useState(3);
+  const { data: session, status } = useSession();
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-950 dark:to-gray-800 text-foreground">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-950 to-gray-800 text-foreground dark">
       <main className="flex flex-col items-center justify-center gap-8 px-8 py-16">
         <div className="text-center space-y-4">
-          <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-amber-600 via-blue-700 to-amber-800 dark:from-blue-400 dark:via-blue-600 dark:to-amber-400 bg-clip-text text-transparent tracking-tight">
+          <h1 className="text-5xl md:text-6xl font-extrabold bg-gradient-to-r from-blue-400 via-blue-600 to-amber-400 bg-clip-text text-transparent tracking-tight">
             Welcome to Block Game!
           </h1>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
@@ -19,33 +20,25 @@ export default function Home() {
           </p>
         </div>
         <div className="flex flex-col items-center gap-4">
-          <Link
-            href="/game"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-700 hover:from-sky-600 hover:to-blue-800 transition-colors text-white text-xl font-bold shadow-lg active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
-          >
-            Play Game
-            <ArrowRight className="w-5 h-5" />
-          </Link>
-          <div className="flex flex-col items-center gap-3 pt-4 border-t border-border/50 w-full max-w-md">
-            <p className="text-sm text-muted-foreground mb-2">
+          {status === "loading" ? (
+            <div className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-card/50 dark:bg-card/30 animate-pulse">
+              <div className="w-24 h-6 bg-muted rounded" />
+            </div>
+          ) : session ? (
+            <Link
+              href="/game"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-700 hover:from-sky-600 hover:to-blue-800 dark:from-sky-400 dark:to-blue-600 dark:hover:from-sky-500 dark:hover:to-blue-700 transition-all text-white text-xl font-bold shadow-lg shadow-sky-500/20 dark:shadow-sky-500/30 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-sky-500 dark:focus:ring-sky-400"
+            >
+              Play Game
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          ) : null}
+          <div className="flex flex-col items-center gap-4 pt-6 border-t border-border/30 w-full max-w-md">
+            <p className="text-sm text-muted-foreground text-center">
               Track your scores and see the global scoreboard
             </p>
-            <div className="flex gap-3 w-full">
-              <Link
-                href="/login"
-                className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-gray-600 to-gray-700 hover:from-gray-700 hover:to-gray-800 transition-colors text-white text-base font-semibold shadow-md active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-              >
-                <LogIn className="w-4 h-4" />
-                Login
-              </Link>
-              <Link
-                href="/signup"
-                className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 transition-colors text-white text-base font-semibold shadow-md active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500"
-              >
-                <UserPlus className="w-4 h-4" />
-                Sign Up
-              </Link>
-            </div>
+            {session && <UserMenu/>}
+            {!session && status !== "loading" && <SignIn/>}
           </div>
         </div>
       </main>
