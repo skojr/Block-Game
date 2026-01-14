@@ -13,7 +13,7 @@ interface TicTacToeGameBoardProps {
 
 export default function TicTacToeBoard({ rows = 3, cols = 3 }: TicTacToeGameBoardProps) {
     const [isXTurn, setIsXTurn] = useState<boolean>(true);
-    const { moves, squares, handleTileClick, undo, redo, reset, canUndo, canRedo, winner } = useBoardGame({ rows, cols });
+    const { moves, squares, handleTileClick, undo, redo, reset, canUndo, canRedo, winner, willDisappearIndex } = useBoardGame({ rows, cols });
 
     const handleCellClick = (index: number) => {
         if (winner) return; // Don't allow moves after a win
@@ -29,6 +29,7 @@ export default function TicTacToeBoard({ rows = 3, cols = 3 }: TicTacToeGameBoar
                 occupied={square.occupied}
                 isX={square.isX}
                 disabled={!!winner}
+                willDisappear={willDisappearIndex === index}
             />
         );
     };
