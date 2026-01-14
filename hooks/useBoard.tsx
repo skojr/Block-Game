@@ -28,18 +28,43 @@ export default function useBoard<T extends CellData>({
   const [future, setFuture] = useState<T[][]>([]);
   const [moves, setMoves] = useState<number>(0);
 
+  // Helper function to compare cells while ignoring transient properties
+  const compareCellState = useCallback((cell1: T, cell2: T, transientProps: string[] = ['selected']): boolean => {
+    const keys1 = Object.keys(cell1).filter(key => !transientProps.includes(key));
+    const keys2 = Object.keys(cell2).filter(key => !transientProps.includes(key));
+    
+    if (keys1.length !== keys2.length) return false;
+    
+    return keys1.every(key => {
+      const val1 = (cell1 as any)[key];
+      const val2 = (cell2 as any)[key];
+      return val1 === val2;
+    });
+  }, []);
+
   const handleCellClick = useCallback(
     (index: number) => {
       const newCells = onCellClick(cells, index);
       
-      // Store current state in history stack before making the move
-      // Clear future stack since we're making a new move
-      setHistory((prev) => [...prev, cells.map((c) => ({ ...c } as T))]);
-      setFuture([]);
-      setCells(newCells);
-      setMoves((prev) => prev + 1);
+      // Check if state actually changed (positions changed, not just transient properties)
+      const stateChanged = cells.some((cell, i) => {
+        return !compareCellState(cell, newCells[i]);
+      });
+      
+      // Only increment moves and update history if state actually changed
+      if (stateChanged) {
+        // Store current state in history stack before making the move
+        // Clear future stack since we're making a new move
+        setHistory((prev) => [...prev, cells.map((c) => ({ ...c } as T))]);
+        setFuture([]);
+        setCells(newCells);
+        setMoves((prev) => prev + 1);
+      } else {
+        // State didn't change (e.g., just selection), update cells without counting as move
+        setCells(newCells);
+      }
     },
-    [cells, onCellClick]
+    [cells, onCellClick, compareCellState]
   );
 
   const undo = useCallback(() => {
