@@ -17,10 +17,11 @@ export default function Home() {
         </div>
         <div className="text-center space-y-2">
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-amber-900 dark:from-gray-100 dark:via-gray-200 dark:to-amber-100 bg-clip-text text-transparent tracking-tight">
-            Tic-Tac-Toe
+            Disappearing Tic-Tac-Toe
           </h1>
           <p className="text-muted-foreground text-lg font-medium">Take turns placing X and O to get three in a row</p>
           <p className="text-muted-foreground text-lg font-medium">Click on an empty square to place your mark</p>
+          <p className="text-muted-foreground text-lg font-medium">Beware, Xs and Os will eventually start to disappear :P</p>
         </div>
         <div className="flex items-center justify-center p-8 rounded-2xl bg-card/50 dark:bg-card/30 backdrop-blur-sm border border-border shadow-xl">
           <TicTacToeBoard />

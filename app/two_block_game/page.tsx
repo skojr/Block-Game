@@ -25,7 +25,7 @@ export default function Home() {
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-amber-900 dark:from-gray-100 dark:via-gray-200 dark:to-amber-100 bg-clip-text text-transparent tracking-tight">
             2 Block Game
           </h1>
-          <p className="text-muted-foreground text-lg font-medium">Goal: Move the yellow squares to opposite corners</p>
+          <p className="text-muted-foreground text-lg font-medium">Goal: Move the amber squares to opposite corners</p>
           <p className="text-muted-foreground text-lg font-medium">Top-left target → Bottom-right corner</p>
           <p className="text-muted-foreground text-lg font-medium">Bottom-right target → Top-left corner</p>
           <p className="text-muted-foreground text-lg font-medium">Rule 1: You can only move a square into open space</p>
