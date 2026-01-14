@@ -1,6 +1,8 @@
 
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
+import prisma from "./lib/prisma"
+import { randomUUID } from "crypto"
  
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -23,4 +25,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async signIn({ user }) {
+      if (!user.email) return false
+
+      await prisma.user.upsert({
+        where: { email: user.email },
+        update: { name: user.name ?? null },
+        create: { id: randomUUID(), email: user.email, name: user.name ?? null },
+      })
+
+      return true
+    },
+  },
 })
