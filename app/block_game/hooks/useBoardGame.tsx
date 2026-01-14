@@ -1,140 +1,113 @@
 "use client";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import canMoveTile from "../domain/canMoveTile";
+import useBoard from "@/hooks/useBoard";
+import { CellData } from "@/types/BoardTypes";
 
 interface Square {
-    occupied: boolean,
-    target: boolean,
-    selected: boolean
+    occupied: boolean;
+    target: boolean;
+    selected: boolean;
 }
 
 interface Hooks {
-    moves: number,
-    handleTileClick: (index: number) => void,
-    squares: Square[],
-    undo: () => void,
-    redo: () => void,
-    reset: () => void,
-    canUndo: boolean,
-    canRedo: boolean
+    moves: number;
+    handleTileClick: (index: number) => void;
+    squares: Square[];
+    undo: () => void;
+    redo: () => void;
+    reset: () => void;
+    canUndo: boolean;
+    canRedo: boolean;
 }
-export default function useBoardGame({ rows, cols }: { rows: number, cols: number }): Hooks {
 
+export default function useBoardGame({ rows, cols }: { rows: number, cols: number }): Hooks {
     const initialSquares: Square[] = Array.from({ length: rows * cols }, (_, i) => ({
-        occupied: i !== rows * cols - 1, // occupied
-        target: i === 0, // target
+        occupied: i !== rows * cols - 1,
+        target: i === 0,
         selected: false,
     }));
 
     const [isASquareselected, setIsASquareselected] = useState<boolean>(false);
     const [selectedTileIndex, setSelectedTileIndex] = useState<number>(-1);
-    const [squares, setSquares] = useState<Square[]>(initialSquares);
-    const [history, setHistory] = useState<Square[][]>([]);
-    const [future, setFuture] = useState<Square[][]>([]);
-    const [moves, setMoves] = useState<number>(0)
 
-    function handleTileClick(index: number): void {
-        const copyOfSquares = squares.slice();
+    const onCellClick = useCallback((currentCells: Square[], index: number): Square[] => {
+        const copyOfSquares = [...currentCells];
+        
         // if empty square is clicked, and another square was previously selected
-        if (!squares[index].occupied) {
+        if (!currentCells[index].occupied) {
             if (isASquareselected) {
-                const emptyTile = squares[index]
+                const emptyTile = currentCells[index];
 
                 // move selected square to empty space
                 if (!canMoveTile(selectedTileIndex, index, cols)) {
                     alert("Illegal Move! Can only move square into adjacent, open space");
-                    return;
+                    return currentCells; // Return unchanged if invalid move
                 }
 
                 // move selected square to empty space
-                copyOfSquares[index] = squares[selectedTileIndex]
-                copyOfSquares[selectedTileIndex] = emptyTile 
+                copyOfSquares[index] = currentCells[selectedTileIndex];
+                copyOfSquares[selectedTileIndex] = emptyTile;
                 
-                // store current state in history stack before making the move
-                // clear future stack since we're making a new move
-                const newHistory = [...history, squares.map(s => ({ ...s }))];
-                setHistory(newHistory);
-                setFuture([]);
-
-                // update squares and reset everything to not selected
-                setSquares(copyOfSquares)
+                // Reset selection state
                 setIsASquareselected(false);
                 setSelectedTileIndex(-1);
                 
-                // increment move count
-                setMoves(newHistory.length);
-            } // else do nothing
+                return copyOfSquares;
+            }
+            // else do nothing
+            return currentCells;
         } else {
-            // update status of square
-            const square = copyOfSquares[index]
-            square.selected = true;
-
-            // update squares 
-            setSquares(copyOfSquares)
-            setIsASquareselected(true)
+            // update status of square - select it
+            copyOfSquares[index].selected = true;
+            setIsASquareselected(true);
             setSelectedTileIndex(index);
+            return copyOfSquares;
         }
-        return;
-    };
+    }, [isASquareselected, selectedTileIndex, cols]);
 
-    function undo(): void {
-        if (history.length === 0) return; // nothing to undo
-        
-        // get the previous state from history stack
-        const previousState = history[history.length - 1];
-        
-        // push current state to future stack (for redo)
-        setFuture([...future, squares.map(s => ({ ...s }))]);
-        
-        // remove last state from history and restore it
-        const newHistory = history.slice(0, -1);
-        setHistory(newHistory);
-        setSquares(previousState.map(s => ({ ...s })));
-        setMoves(newHistory.length);
-        
-        // clear selection when undoing
+    const {
+        cells,
+        moves,
+        handleCellClick,
+        undo: baseUndo,
+        redo: baseRedo,
+        reset: baseReset,
+        canUndo,
+        canRedo,
+    } = useBoard({
+        initialCells: initialSquares as unknown as CellData[],
+        onCellClick: onCellClick as unknown as (currentCells: CellData[], index: number) => CellData[],
+    });
+    
+    const squares = cells as unknown as Square[];
+
+    const undo = useCallback(() => {
+        baseUndo();
         setIsASquareselected(false);
         setSelectedTileIndex(-1);
-    }
+    }, [baseUndo]);
 
-    function redo(): void {
-        if (future.length === 0) return; // nothing to redo
-        
-        // get the next state from future stack
-        const nextState = future[future.length - 1];
-        
-        // push current state to history stack (for undo)
-        const newHistory = [...history, squares.map(s => ({ ...s }))];
-        setHistory(newHistory);
-        
-        // remove last state from future and restore it
-        setFuture(future.slice(0, -1));
-        setSquares(nextState.map(s => ({ ...s })));
-        setMoves(newHistory.length);
-        
-        // clear selection when redoing
+    const redo = useCallback(() => {
+        baseRedo();
         setIsASquareselected(false);
         setSelectedTileIndex(-1);
-    }
+    }, [baseRedo]);
 
-    function reset(): void {
-        // restore to initial state
-        setSquares(initialSquares.map(s => ({ ...s })));
-        setHistory([]);
-        setFuture([]);
-        setMoves(0);
+    const reset = useCallback(() => {
+        baseReset();
         setIsASquareselected(false);
         setSelectedTileIndex(-1);
-    }
+    }, [baseReset]);
 
     return {
         moves,
-        handleTileClick,
+        handleTileClick: handleCellClick,
         squares,
         undo,
         redo,
         reset,
-        canUndo: history.length > 0,
-        canRedo: future.length > 0
-    }
+        canUndo,
+        canRedo,
+    };
 }

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import Board from "./components/board";
+import TicTacToeBoard from "./components/TicTacToeBoard";
 
 export default function Home() {
   return (
@@ -17,15 +17,13 @@ export default function Home() {
         </div>
         <div className="text-center space-y-2">
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-800 via-gray-700 to-amber-900 dark:from-gray-100 dark:via-gray-200 dark:to-amber-100 bg-clip-text text-transparent tracking-tight">
-            Block Game
+            Tic-Tac-Toe
           </h1>
-          <p className="text-muted-foreground text-lg font-medium">Goal: Move the yellow square into the bottom right corner</p>
-          <p className="text-muted-foreground text-lg font-medium">Rule 1: You can only move a square into open space</p>
-          <p className="text-muted-foreground text-lg font-medium">Rule 2: You can only move a square into directly djacent spaces (either horizontally or vertically)</p>
-          
+          <p className="text-muted-foreground text-lg font-medium">Take turns placing X and O to get three in a row</p>
+          <p className="text-muted-foreground text-lg font-medium">Click on an empty square to place your mark</p>
         </div>
         <div className="flex items-center justify-center p-8 rounded-2xl bg-card/50 dark:bg-card/30 backdrop-blur-sm border border-border shadow-xl">
-          <Board></Board>
+          <TicTacToeBoard />
         </div>
       </main>
     </div>
