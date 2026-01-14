@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import canMoveTile from "../domain/canMoveTile";
 import useBoard from "@/hooks/useBoard";
 import { CellData } from "@/types/BoardTypes";
+import { saveScore } from "@/app/actions";
 
 interface Square {
     occupied: boolean;
@@ -89,6 +90,7 @@ export default function useBoardGame({ rows, cols }: { rows: number, cols: numbe
     
     const squares = cells as unknown as Square[];
     const [won, setWon] = useState<boolean>(false);
+    const hasSavedRef = useRef(false);
     
     // Track the initial positions of target squares using refs
     const topLeftTargetInitialIndex = useRef<number>(topLeftIndex);
@@ -105,8 +107,25 @@ export default function useBoardGame({ rows, cols }: { rows: number, cols: numbe
         
         const topLeftTargetAtBottomRight = bottomRightSquare?.targetId === 'topLeft' && bottomRightSquare?.occupied;
         const bottomRightTargetAtTopLeft = topLeftSquare?.targetId === 'bottomRight' && topLeftSquare?.occupied;
+        const didWin = topLeftTargetAtBottomRight && bottomRightTargetAtTopLeft
         
-        setWon(topLeftTargetAtBottomRight && bottomRightTargetAtTopLeft);
+        setWon(didWin);
+
+        if (!didWin) {
+            hasSavedRef.current = false;
+            return;
+          }
+        
+          if (!hasSavedRef.current) {
+            hasSavedRef.current = true;
+            (async () => {
+              try {
+                await saveScore("2 Block Game", moves);
+              } catch (err) {
+                console.error("Failed to save 2 Block Game score", err);
+              }
+            })();
+          }
     }, [squares, rows, cols, totalCells, topLeftIndex, bottomRightIndex]);
 
     const undo = useCallback(() => {
