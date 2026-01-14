@@ -13,6 +13,9 @@ interface TwoBlockGameBoardProps {
 export default function TwoBlockGameBoard({ rows = 3, cols = 3 }: TwoBlockGameBoardProps) {
     const { moves, squares, handleTileClick, undo, redo, reset, canUndo, canRedo, won } = useBoardGame({ rows, cols });
 
+    const topLeftIndex = 0;
+    const bottomRightIndex = rows * cols - 1;
+
     const renderCell = (cell: CellData, index: number) => {
         if (!cell) return null;
         const square = cell as { occupied: boolean; target: boolean; targetId?: 'topLeft' | 'bottomRight' };
