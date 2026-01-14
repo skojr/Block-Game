@@ -3,6 +3,7 @@ import { useCallback, useRef, useState, useEffect } from "react";
 import useBoard from "@/hooks/useBoard";
 import { CellData } from "@/types/BoardTypes";
 import didWin from "../domain/game";
+import { saveScore } from "@/app/actions";
 
 interface Square {
     occupied: boolean;
@@ -29,6 +30,7 @@ export default function useBoardGame({ rows, cols }: { rows: number, cols: numbe
     }));
 
     const isXRef = useRef<boolean>(true);
+    const hasSavedRef = useRef(false)
     const [winner, setWinner] = useState<"X" | "O" | null>(null);
     const moveHistoryRef = useRef<number[]>([]); // Track order of moves (FIFO queue)
 
@@ -84,9 +86,27 @@ export default function useBoardGame({ rows, cols }: { rows: number, cols: numbe
 
     // Check for wins after each move
     useEffect(() => {
-        const result = didWin(squares, cols);
-        setWinner(result.won ? result.winner : null);
-    }, [squares, cols]);
+        const result = didWin(squares, cols)
+      
+        if (!result.won) {
+          setWinner(null)
+          hasSavedRef.current = false
+          return
+        }
+      
+        setWinner(result.winner)
+      
+        if (!hasSavedRef.current) {
+          hasSavedRef.current = true
+          ;(async () => {
+            try {
+              await saveScore("Tic Tac Toe", moves)
+            } catch (err) {
+              console.error("Failed to save score", err)
+            }
+          })()
+        }
+      }, [squares, cols, moves])
 
     const handleTileClick = useCallback((index: number, isX: boolean) => {
         if (winner) return; // Don't allow moves after a win

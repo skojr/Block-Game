@@ -50,7 +50,7 @@ export default async function Leaderboard() {
                     >
                       <RankBadge rank={idx + 1} />
                       <span>
-                        {row.user.name ?? row.user.email} — {row.moves} moves
+                        {row.user.name ?? row.user.email} | {row.moves} moves
                       </span>
                     </li>
                   ))}
