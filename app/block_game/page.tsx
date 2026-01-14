@@ -1,8 +1,14 @@
+"use client";
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LayoutGrid } from "lucide-react";
 import BlockGameBoard from "./components/BlockGameBoard";
 
 export default function Home() {
+  const [boardSize, setBoardSize] = useState<number>(3);
+
+  const boardSizes = [3, 4, 5, 6];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-950 dark:to-gray-800 text-foreground">
       <main className="flex min-h-screen w-full flex-col items-center justify-center px-8 py-16 gap-8">
@@ -21,11 +27,31 @@ export default function Home() {
           </h1>
           <p className="text-muted-foreground text-lg font-medium">Goal: Move the yellow square into the bottom right corner</p>
           <p className="text-muted-foreground text-lg font-medium">Rule 1: You can only move a square into open space</p>
-          <p className="text-muted-foreground text-lg font-medium">Rule 2: You can only move a square into directly djacent spaces (either horizontally or vertically)</p>
-          
+          <p className="text-muted-foreground text-lg font-medium">Rule 2: You can only move a square into directly adjacent spaces (either horizontally or vertically)</p>
         </div>
-        <div className="flex items-center justify-center p-8 rounded-2xl bg-card/50 dark:bg-card/30 backdrop-blur-sm border border-border shadow-xl">
-          <BlockGameBoard />
+        <div className="flex flex-col items-center gap-4">
+          <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-card/80 dark:bg-card/60 backdrop-blur-sm border border-border shadow-lg">
+            <LayoutGrid className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm font-medium text-muted-foreground">Board Size:</span>
+            <div className="flex gap-2">
+              {boardSizes.map((size) => (
+                <button
+                  key={size}
+                  onClick={() => setBoardSize(size)}
+                  className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all ${
+                    boardSize === size
+                      ? "bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-md"
+                      : "bg-secondary/50 hover:bg-secondary text-foreground"
+                  }`}
+                >
+                  {size}x{size}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center justify-center p-8 rounded-2xl bg-card/50 dark:bg-card/30 backdrop-blur-sm border border-border shadow-xl">
+            <BlockGameBoard key={boardSize} rows={boardSize} cols={boardSize} />
+          </div>
         </div>
       </main>
     </div>

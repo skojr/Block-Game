@@ -14,6 +14,7 @@ export default function BlockGameBoard({ rows = 3, cols = 3 }: BlockGameBoardPro
     const { moves, squares, handleTileClick, undo, redo, reset, canUndo, canRedo, won } = useBoardGame({ rows, cols });
 
     const renderCell = (cell: CellData, index: number) => {
+        if (!cell) return null;
         const square = cell as { occupied: boolean; target: boolean };
         return (
             <BlockSquare
