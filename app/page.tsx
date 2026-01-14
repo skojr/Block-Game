@@ -30,6 +30,13 @@ export default function Home() {
               <ArrowRight className="w-5 h-5" />
             </Link>
               <Link
+                href="/two_block_game"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-700 hover:from-sky-600 hover:to-blue-800 dark:from-sky-400 dark:to-blue-600 dark:hover:from-sky-500 dark:hover:to-blue-700 transition-all text-white text-xl font-bold shadow-lg shadow-sky-500/20 dark:shadow-sky-500/30 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-sky-500 dark:focus:ring-sky-400"
+              >
+                2 Block Game
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+              <Link
                 href="/tic_tac_toe_game"
                 className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-700 hover:from-sky-600 hover:to-blue-800 dark:from-sky-400 dark:to-blue-600 dark:hover:from-sky-500 dark:hover:to-blue-700 transition-all text-white text-xl font-bold shadow-lg shadow-sky-500/20 dark:shadow-sky-500/30 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background focus:ring-sky-500 dark:focus:ring-sky-400"
               >
