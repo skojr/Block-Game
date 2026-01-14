@@ -9,20 +9,19 @@ datasource db {
 }
 
 model User {
-  id     Int     @id @default(autoincrement())
-  email  String  @unique
-  name   String?
-  scores Score[]
+  id       String  @id
+  email    String  @unique
+  name     String?
+  scores   Score[]
 }
 
 model Score {
   id        Int      @id @default(autoincrement())
-  userId    Int
+  userId    String
   moves     Int
   game      String
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([game, moves])
   @@index([userId, game])
 }

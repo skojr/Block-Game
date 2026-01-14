@@ -1,48 +1,39 @@
 import 'dotenv/config'
-import { PrismaClient, Prisma } from "../app/generated/prisma";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaClient } from '../app/generated/prisma'
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL!,
-});
+const prisma = new PrismaClient()
 
-const prisma = new PrismaClient({
-  adapter,
-});
-
-const userData: Prisma.UserCreateInput[] = [
+const users = [
   {
-    name: "Alice",
+    id: "google-sub-alice",
     email: "alice@prisma.io",
+    name: "Alice",
     scores: {
       create: [
         { game: "2 Block Game", moves: 24 },
         { game: "Tic Tac Toe", moves: 12 },
-        { game: "Block Game", moves: 16 },
       ],
     },
   },
   {
-    name: "Bob",
+    id: "google-sub-bob",
     email: "bob@prisma.io",
+    name: "Bob",
     scores: {
       create: [
         { game: "2 Block Game", moves: 25 },
-        { game: "Tic Tac Toe", moves: 10 },
         { game: "Block Game", moves: 15 },
       ],
     },
   },
-];
+]
 
 async function main() {
-  for (const u of userData) {
-    await prisma.user.create({ data: u });
+  for (const user of users) {
+    await prisma.user.create({ data: user })
   }
 }
 
 main()
   .catch(console.error)
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+  .finally(() => prisma.$disconnect())

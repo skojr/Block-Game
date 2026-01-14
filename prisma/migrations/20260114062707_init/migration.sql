@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "User" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "name" TEXT,
 
@@ -10,7 +10,7 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Score" (
     "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
     "moves" INTEGER NOT NULL,
     "game" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -20,9 +20,6 @@ CREATE TABLE "Score" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-
--- CreateIndex
-CREATE INDEX "Score_game_moves_idx" ON "Score"("game", "moves");
 
 -- CreateIndex
 CREATE INDEX "Score_userId_game_idx" ON "Score"("userId", "game");
