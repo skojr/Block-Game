@@ -23,7 +23,15 @@ interface Hooks {
     willDisappearIndex: number | null;
 }
 
-export default function useBoardGame({ rows, cols }: { rows: number, cols: number }): Hooks {
+export default function useBoardGame({
+  rows,
+  cols,
+  ownerSymbol,
+}: {
+  rows: number;
+  cols: number;
+  ownerSymbol: "X" | "O";
+}): Hooks {
     const initialSquares: Square[] = Array.from({ length: rows * cols }, (_, i) => ({
         occupied: false,
         isX: false,
@@ -86,27 +94,28 @@ export default function useBoardGame({ rows, cols }: { rows: number, cols: numbe
 
     // Check for wins after each move
     useEffect(() => {
-        const result = didWin(squares, cols)
-      
-        if (!result.won) {
-          setWinner(null)
-          hasSavedRef.current = false
-          return
-        }
-      
-        setWinner(result.winner)
-      
-        if (!hasSavedRef.current) {
-          hasSavedRef.current = true
-          ;(async () => {
-            try {
-              await saveScore("Tic Tac Toe", moves)
-            } catch (err) {
-              console.error("Failed to save score", err)
-            }
-          })()
-        }
-      }, [squares, cols, moves])
+      const result = didWin(squares, cols);
+
+      if (!result.won) {
+        setWinner(null);
+        hasSavedRef.current = false;
+        return;
+      }
+
+      setWinner(result.winner);
+
+      // Only save when the owner's symbol wins
+      if (!hasSavedRef.current && result.winner === ownerSymbol) {
+        hasSavedRef.current = true;
+        (async () => {
+          try {
+            await saveScore("Tic Tac Toe", moves);
+          } catch (err) {
+            console.error("Failed to save score", err);
+          }
+        })();
+      }
+    }, [squares, cols, moves, ownerSymbol]);
 
     const handleTileClick = useCallback((index: number, isX: boolean) => {
         if (winner) return; // Don't allow moves after a win

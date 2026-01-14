@@ -12,8 +12,9 @@ interface TicTacToeGameBoardProps {
 }
 
 export default function TicTacToeBoard({ rows = 3, cols = 3 }: TicTacToeGameBoardProps) {
+    const [ownerSymbol, setOwnerSymbol] = useState<"X" | "O">("X");
     const [isXTurn, setIsXTurn] = useState<boolean>(true);
-    const { moves, squares, handleTileClick, undo, redo, reset, canUndo, canRedo, winner, willDisappearIndex } = useBoardGame({ rows, cols });
+    const { moves, squares, handleTileClick, undo, redo, reset, canUndo, canRedo, winner, willDisappearIndex } = useBoardGame({ rows, cols, ownerSymbol });
 
     const handleCellClick = (index: number) => {
         if (winner) return; // Don't allow moves after a win
@@ -36,6 +37,43 @@ export default function TicTacToeBoard({ rows = 3, cols = 3 }: TicTacToeGameBoar
 
     return (
         <div className="flex flex-col gap-4">
+            <div className="flex justify-center">
+                <div className="inline-flex items-center gap-3 rounded-full bg-card/60 dark:bg-card/40 border border-border/40 px-3 py-1.5">
+                    <span className="text-xs text-muted-foreground">You play as:</span>
+                    <div className="inline-flex rounded-full bg-background/40 border border-border/40 p-1">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (moves > 0 || winner) return;
+                                setOwnerSymbol("X");
+                                setIsXTurn(true);
+                            }}
+                            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                                ownerSymbol === "X"
+                                    ? "bg-gradient-to-r from-sky-500 to-blue-700 text-white shadow-sm"
+                                    : "text-muted-foreground hover:bg-card/80"
+                            }`}
+                        >
+                            X (first)
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (moves > 0 || winner) return;
+                                setOwnerSymbol("O");
+                                setIsXTurn(true); // X always starts; owner is O but second
+                            }}
+                            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                                ownerSymbol === "O"
+                                    ? "bg-gradient-to-r from-amber-500 to-amber-700 text-white shadow-sm"
+                                    : "text-muted-foreground hover:bg-card/80"
+                            }`}
+                        >
+                            O (second)
+                        </button>
+                    </div>
+                </div>
+            </div>
             {winner && (
                 <div className="flex justify-center items-center">
                     <div className="px-8 py-4 rounded-xl bg-gradient-to-r from-amber-500/90 to-amber-600/90 dark:from-amber-600/90 dark:to-amber-700/90 backdrop-blur-sm border-2 border-amber-400/50 dark:border-amber-500/50 shadow-xl animate-pulse">
