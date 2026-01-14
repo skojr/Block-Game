@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import canMoveTile from "../domain/canMoveTile";
 import useBoard from "@/hooks/useBoard";
 import { CellData } from "@/types/BoardTypes";
@@ -19,6 +19,7 @@ interface Hooks {
     reset: () => void;
     canUndo: boolean;
     canRedo: boolean;
+    won: boolean;
 }
 
 export default function useBoardGame({ rows, cols }: { rows: number, cols: number }): Hooks {
@@ -81,6 +82,14 @@ export default function useBoardGame({ rows, cols }: { rows: number, cols: numbe
     });
     
     const squares = cells as unknown as Square[];
+    const [won, setWon] = useState<boolean>(false);
+
+    // Check for win: target square at bottom right corner (index = rows * cols - 1)
+    useEffect(() => {
+        const bottomRightIndex = rows * cols - 1;
+        const targetSquare = squares.findIndex((sq) => sq.target && sq.occupied);
+        setWon(targetSquare === bottomRightIndex);
+    }, [squares, rows, cols]);
 
     const undo = useCallback(() => {
         baseUndo();
@@ -98,6 +107,7 @@ export default function useBoardGame({ rows, cols }: { rows: number, cols: numbe
         baseReset();
         setIsASquareselected(false);
         setSelectedTileIndex(-1);
+        setWon(false);
     }, [baseReset]);
 
     return {
@@ -109,5 +119,6 @@ export default function useBoardGame({ rows, cols }: { rows: number, cols: numbe
         reset,
         canUndo,
         canRedo,
+        won,
     };
 }

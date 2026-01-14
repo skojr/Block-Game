@@ -2,7 +2,7 @@
 import Board from "@/components/Board";
 import useBoardGame from "../hooks/useBoardGame";
 import BlockSquare from "./BlockSquare";
-import { Undo2, Redo2, RotateCcw } from "lucide-react";
+import { Undo2, Redo2, RotateCcw, Trophy } from "lucide-react";
 import { CellData } from "@/types/BoardTypes";
 
 interface BlockGameBoardProps {
@@ -11,7 +11,7 @@ interface BlockGameBoardProps {
 }
 
 export default function BlockGameBoard({ rows = 3, cols = 3 }: BlockGameBoardProps) {
-    const { moves, squares, handleTileClick, undo, redo, reset, canUndo, canRedo } = useBoardGame({ rows, cols });
+    const { moves, squares, handleTileClick, undo, redo, reset, canUndo, canRedo, won } = useBoardGame({ rows, cols });
 
     const renderCell = (cell: CellData, index: number) => {
         const square = cell as { occupied: boolean; target: boolean };
@@ -26,6 +26,21 @@ export default function BlockGameBoard({ rows = 3, cols = 3 }: BlockGameBoardPro
 
     return (
         <div className="flex flex-col gap-4">
+            {won && (
+                <div className="flex justify-center items-center">
+                    <div className="px-8 py-4 rounded-xl bg-gradient-to-r from-amber-500/90 to-amber-600/90 dark:from-amber-600/90 dark:to-amber-700/90 backdrop-blur-sm border-2 border-amber-400/50 dark:border-amber-500/50 shadow-xl animate-pulse">
+                        <div className="flex items-center gap-3">
+                            <Trophy className="w-6 h-6 text-amber-200 dark:text-amber-100" />
+                            <div className="flex flex-col">
+                                <span className="text-sm font-medium text-amber-50 dark:text-amber-100">Puzzle Solved!</span>
+                                <span className="text-2xl font-bold text-white">
+                                    You Win!
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className="flex justify-center items-center gap-4">
                 <div className="px-6 py-3 rounded-xl bg-card/80 dark:bg-card/60 backdrop-blur-sm border border-border shadow-lg">
                     <div className="flex items-center gap-2">
