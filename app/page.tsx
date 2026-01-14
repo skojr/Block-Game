@@ -29,14 +29,23 @@ export default async function Home() {
           </div>
         ) : null}
 
-        <div className="w-full flex flex-col items-center gap-4 pt-6 border-t border-border/30">
-          <p className="text-sm text-muted-foreground text-center">
-            Track your scores and see the global scoreboard
-          </p>
-          {session ? <UserMenu /> : <SignIn />}
-        </div>
+        <div className="w-full flex flex-col items-center gap-8 mb-8 pt-6 border-t border-border/30">
+          {session ? (
+            <div className="flex flex-col gap-8 mx-auto items-center">
+              <UserMenu />
+              <Leaderboard />
+            </div>
 
-        <Leaderboard />
+          )
+            : (
+              <div className="flex flex-col items-center gap-3">
+                <p className="text-lg text-whitw text-center mb-1">
+                  Sign in to play and starting tracking your scores with the leaderboard.
+                </p>
+                <SignIn />
+              </div>
+            )}
+        </div>
       </main>
     </div>
   )

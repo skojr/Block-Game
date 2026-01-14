@@ -32,8 +32,8 @@ export default function UserMenu() {
   }
 
   return (
-    <div className="w-full max-w-md bg-card/50 dark:bg-card/30 backdrop-blur-sm border border-border/30 rounded-xl p-4">
-      <div className="flex items-center gap-4">
+    <div className="w-full max-w-md bg-gradient-to-r from-sky-500 to-blue-700 rounded-xl p-4">
+      <div className="flex justify-center items-center gap-4">
         {session.user?.image && !avatarError ? (
           <img
             src={session.user.image}
@@ -48,8 +48,8 @@ export default function UserMenu() {
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-foreground truncate">{session.user?.name}</p>
-          <p className="text-sm text-muted-foreground truncate">{session.user?.email}</p>
+          <p className="font-semibold text-white truncate">{session.user?.name}</p>
+          <p className="text-sm text-white truncate">{session.user?.email}</p>
         </div>
         <button
           onClick={() => signOut({ callbackUrl: "/" })}
